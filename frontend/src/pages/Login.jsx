@@ -7,10 +7,29 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Login submitted:", userInput, password);
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await fetch("http://localhost:5000/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: userInput,   // using input as email
+        password: password
+      })
+    });
+
+    const data = await res.text();
+    alert(data);
+
+  } catch (err) {
+    console.log(err);
+    alert("Error connecting to server ❌");
+  }
+};
 
   return (
     <div className="login-wrapper">

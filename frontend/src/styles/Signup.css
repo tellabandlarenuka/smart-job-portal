@@ -9,16 +9,17 @@
 
 /* ===== BACKGROUND ===== */
 .signup-bg {
-  height: 100vh;              /* FIXED full screen */
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg,#141e30,#243b55);
 
-  padding-top: 70px;          /* ONLY navbar space */
+  padding-top: 70px;
   box-sizing: border-box;
-  overflow: hidden;           /* 🚫 remove scroll */
+  overflow: hidden;
 }
+
 /* ===== CARD ===== */
 .signup-card {
   width: 360px;
@@ -43,13 +44,16 @@
   margin-bottom: 20px;
 }
 
-/* ===== FORM GROUP (CENTER BLOCK, LEFT LABEL) ===== */
+/* ===== FORM GROUP ===== */
 .form-group {
- width: 100%;      /* FULL WIDTH */
- margin-bottom: 15px;  /* center whole block */
- text-align: left;      /* label left */
+  width: 100%;
+  margin-bottom: 15px;
+  text-align: left;
+
+  position: relative;   /* 🔥 IMPORTANT for dropdown */
 }
 
+/* ===== LABEL ===== */
 .form-group label {
   color: #ddd;
   font-size: 14px;
@@ -90,9 +94,9 @@
 
 /* ===== BUTTON ===== */
 .signup-btn {
-  width: 100%;              /* same as input block */
+  width: 100%;
   padding: 8px;
-  margin: 10px auto;       /* center button */
+  margin: 10px auto;
   display: block;
 
   background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
@@ -120,4 +124,41 @@
   color: #00f2fe;
   text-decoration: none;
   font-weight: 600;
+}
+
+/* =============================== */
+/* 🔥 NEW: GOOGLE STYLE SUGGESTIONS */
+/* =============================== */
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #2c2c2c;   /* 🔥 grey background */
+  color: #fff;           /* 🔥 white text */
+  border-radius: 6px;
+  margin-top: 3px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  z-index: 100;
+
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* each item */
+.suggestions div {
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* hover effect */
+.suggestions div:hover {
+  background: #444;   /* slightly lighter grey */
+}
+
+/* typed part highlight */
+.suggestions strong {
+  color: #00f2fe;   /* highlight color */
 }
