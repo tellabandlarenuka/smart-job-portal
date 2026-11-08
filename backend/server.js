@@ -3,11 +3,14 @@ const cors = require("cors");
 const db = require("./config/db");
 
 const app = express();
-
+app.use((req, res, next) => {
+  console.log("REQUEST:", req.method, req.url);
+  next();
+});
 // ✅ Better CORS setup (important for React)
 app.use(
   cors({
-    origin: "http://localhost:5173", // your React app
+  origin: ["http://localhost:5173", "http://localhost:5174"], // your React app
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

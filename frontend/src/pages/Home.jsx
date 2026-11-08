@@ -13,8 +13,6 @@ const Home = () => {
         <h1>Find The Perfect Job You Deserve</h1>
         <p>Discover opportunities that match your skills and aspirations</p>
 
-        
-
       </section>
       
       <section className="features-section">

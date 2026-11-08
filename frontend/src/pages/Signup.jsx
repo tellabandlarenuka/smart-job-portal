@@ -22,12 +22,16 @@ const Signup = () => {
   }, []);
 
   // 🔍 Filter suggestions
-  const filteredNames = savedNames.filter((n) =>
-    n.toLowerCase().includes(name.toLowerCase())
+  const filteredNames = savedNames.filter(
+    (n) =>
+      n.toLowerCase().includes(name.toLowerCase()) &&
+      n.toLowerCase() !== name.toLowerCase(),
   );
 
-  const filteredEmails = savedEmails.filter((e) =>
-    e.toLowerCase().includes(email.toLowerCase())
+  const filteredEmails = savedEmails.filter(
+    (e) =>
+      e.toLowerCase().includes(email.toLowerCase()) &&
+      e.toLowerCase() !== email.toLowerCase(),
   );
 
   // 🔥 Email validation (REAL-TIME)
@@ -90,9 +94,9 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-  "http://127.0.0.1:5000/api/users/signup",
-  { name, email, password }
-);
+        "http://127.0.0.1:5000/api/users/signup",
+        { name, email, password },
+      );
 
       alert(response.data || "Signup successful ✅");
 
@@ -112,7 +116,8 @@ const Signup = () => {
       setPassword("");
       setConfirmPassword("");
     } catch (error) {
-      alert("Signup failed ❌");
+      console.log("Signup Error:", error.response?.data || error.message);
+      alert(error.response?.data?.message || error.message);
     }
   };
 
@@ -186,8 +191,7 @@ const Signup = () => {
 
               <span
                 className="show-btn"
-                onClick={() => setShowPassword(!showPassword)}
-              >
+                onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? "Hide" : "Show"}
               </span>
             </div>

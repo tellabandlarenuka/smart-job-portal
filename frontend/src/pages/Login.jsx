@@ -1,35 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Login.css";
 
 const Login = () => {
-  const [userInput, setUserInput] = useState(""); // changed
+  const [userInput, setUserInput] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [savedEmails, setSavedEmails] = useState([]);
+
+  useEffect(() => {
+    const emails = JSON.parse(localStorage.getItem("emails")) || [];
+    setSavedEmails(emails);
+  }, []);
+
+  const filteredEmails = savedEmails.filter(
+    (email) =>
+      email.toLowerCase().startsWith(userInput.toLowerCase()) &&
+      email.toLowerCase() !== userInput.toLowerCase(),
+  );
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const res = await fetch("http://localhost:5000/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email: userInput,   // using input as email
-        password: password
-      })
-    });
+    try {
+      const res = await fetch("http://localhost:5000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: userInput,
+          password: password,
+        }),
+      });
 
-    const data = await res.text();
-    alert(data);
-
-  } catch (err) {
-    console.log(err);
-    alert("Error connecting to server ❌");
-  }
-};
+      const data = await res.text();
+      alert(data);
+    } catch (err) {
+      console.log(err);
+      alert("Error connecting to server ❌");
+    }
+  };
 
   return (
     <div className="login-wrapper">
@@ -39,18 +50,33 @@ const Login = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email / Username</label> {/* changed */}
+            <label>Email / Username</label>
+
             <input
-              type="text"   /* changed */
-              placeholder="Enter Email or Username"  /* changed */
+              type="text"
+              placeholder="Enter Email or Username"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               required
             />
+
+            {filteredEmails.length > 0 && userInput && (
+              <div className="suggestions-list">
+                {filteredEmails.map((email, index) => (
+                  <div
+                    key={index}
+                    className="suggestion-item"
+                    onClick={() => setUserInput(email)}>
+                    {email}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="form-group">
             <label>Password</label>
+
             <div className="password-box">
               <input
                 type={showPassword ? "text" : "password"}
@@ -59,10 +85,10 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+
               <span
                 className="show-btn"
-                onClick={() => setShowPassword(!showPassword)}
-              >
+                onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? "Hide" : "Show"}
               </span>
             </div>
@@ -72,7 +98,8 @@ const Login = () => {
             <label>
               <input type="checkbox" /> Remember Me
             </label>
-            <a href="#">Forgot Password?</a>
+
+            <Link to="/forgot-password">Forgot Password?</Link>
           </div>
 
           <button type="submit" className="login-btn">
