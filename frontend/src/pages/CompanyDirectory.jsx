@@ -53,7 +53,7 @@ const CompanyDirectory = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/users/companies?name=${encodeURIComponent(company)}`,
+        `http://localhost:5000/api/users/company_directory?name=${encodeURIComponent(company)}`,
       );
 
       if (!res.ok) {
@@ -64,7 +64,7 @@ const CompanyDirectory = () => {
 
       setDbCompanies(data);
 
-      setMessage(data.length === 0 ? "Company details will be added soon" : "");
+      setMessage(data.length === 0 ? "Company details Not found" : "");
     } catch (error) {
       console.log("Company Search Error:", error);
       setDbCompanies([]);

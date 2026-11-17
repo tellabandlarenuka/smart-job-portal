@@ -1,164 +1,135 @@
-.tech-page {
 
+.tech-page {
   min-height: 100vh;
   padding-top: 120px;
-
   text-align: center;
   color: white;
-
-  background: linear-gradient(
-    135deg,
-    #141e30,
-    #243b55
-  );
-
+  background: linear-gradient(135deg, #141e30, #243b55);
   font-family: Arial, Helvetica, sans-serif;
 }
 
-
-/* title */
-
+/* TITLE */
 .tech-title {
   font-size: 40px;
 }
 
-
-/* search */
-
+/* SEARCH */
 .search-area {
   margin-top: 20px;
 }
 
 .search-area input {
-
   padding: 10px;
   width: 220px;
 }
 
 .search-area button {
-
   padding: 10px;
   margin-left: 10px;
-
   background: orange;
   border: none;
   cursor: pointer;
 }
 
 .search-area button:hover {
-
   background: grey;
   color: white;
 }
 
-
-/* tech buttons */
-
+/* TECHNOLOGY BUTTONS */
 .tech-list {
-
   margin-top: 30px;
-
   display: flex;
   flex-wrap: wrap;
-
   justify-content: center;
-
   gap: 15px;
 }
 
 .tech-btn {
-
   padding: 10px 18px;
-
   border: 2px solid cyan;
-
   background: transparent;
-
   color: white;
-
   font-weight: bold;
-
   cursor: pointer;
-
   border-radius: 6px;
-
   transition: 0.3s;
 }
 
 .tech-btn:hover {
-
   background: cyan;
   color: black;
-
   transform: scale(1.05);
 }
 
+/* RESULT */
+.result-box {
+  margin-top: 45px;
+}
 
-/* graph */
+.result-box h2 {
+  font-size: 30px;
+}
 
+/* POPULARITY BAR */
 .bar {
-
   width: 60%;
-  height: 30px;
-
+  height: 40px;
   background: white;
-
-  margin: 20px auto;
-
-  border-radius: 10px;
+  margin: 25px auto;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
 }
 
 .fill {
-
   height: 100%;
-
   background: gold;
-
-  border-radius: 10px;
-
-  text-align: center;
-  color: black;
-  font-weight: bold;
+  border-radius: 12px;
+  transition: width 0.5s ease;
 }
 
+.percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  font-weight: bold;
+  z-index: 2;
+  white-space: nowrap;
+}
 
-/* companies box */
-
+/* COMPANIES BOX */
 .company-box {
-
-  margin-top: 20px;
-
+  margin: 20px auto;
+  width: 80%;
   display: flex;
-
   justify-content: center;
-
+  align-items: center;
   flex-wrap: wrap;
-
   gap: 12px;
 }
 
-
 .company-item {
-
-  padding: 8px 15px;
-
+  display: inline-block;
+  width: fit-content;
+  flex: 0 0 auto;
+  padding: 8px 18px;
   background: white;
-
   color: black;
-
   border-radius: 20px;
-
   font-weight: bold;
-
   box-shadow: 0 2px 6px black;
-
   transition: 0.3s;
 }
 
-
 .company-item:hover {
-
   background: gold;
-
   transform: scale(1.1);
+}
+
+/* NOT FOUND */
+.not-found {
+  margin-top: 30px;
 }

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styles/Roles.css";
 
 function Roles() {
   const [roleInput, setRoleInput] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [jobs, setJobs] = useState([]);
+
+  const requestId = useRef(0);
 
   const roles = [
     "Software Engineer",
@@ -25,247 +27,100 @@ function Roles() {
     "Database Developer",
   ];
 
-  // multiple companies per role
-
-  const allJobs = [
-    {
-      company: "TCS",
-      role: "Software Engineer",
-      salary: "6 LPA",
-      rating: 4,
-      type: "Service",
-      location: "Hyderabad",
-    },
-    {
-      company: "Infosys",
-      role: "Software Engineer",
-      salary: "5.5 LPA",
-      rating: 3,
-      type: "Service",
-      location: "Bangalore",
-    },
-    {
-      company: "Wipro",
-      role: "Software Engineer",
-      salary: "6 LPA",
-      rating: 3,
-      type: "Service",
-      location: "Chennai",
-    },
-
-    {
-      company: "Infosys",
-      role: "Python Developer",
-      salary: "5 LPA",
-      rating: 3,
-      type: "Service",
-      location: "Bangalore",
-    },
-    {
-      company: "TCS",
-      role: "Python Developer",
-      salary: "6 LPA",
-      rating: 4,
-      type: "Service",
-      location: "Hyderabad",
-    },
-
-    {
-      company: "Wipro",
-      role: "Java Developer",
-      salary: "5.5 LPA",
-      rating: 3,
-      type: "Service",
-      location: "Chennai",
-    },
-    {
-      company: "Accenture",
-      role: "Java Developer",
-      salary: "7 LPA",
-      rating: 4,
-      type: "Service",
-      location: "Pune",
-    },
-
-    {
-      company: "Zoho",
-      role: "Web Developer",
-      salary: "8 LPA",
-      rating: 4,
-      type: "Product",
-      location: "Chennai",
-    },
-    {
-      company: "TCS",
-      role: "Web Developer",
-      salary: "6 LPA",
-      rating: 3,
-      type: "Service",
-      location: "Hyderabad",
-    },
-
-    {
-      company: "IBM",
-      role: "Data Scientist",
-      salary: "12 LPA",
-      rating: 4,
-      type: "Product",
-      location: "Pune",
-    },
-    {
-      company: "Google",
-      role: "AI Engineer",
-      salary: "25 LPA",
-      rating: 5,
-      type: "Product",
-      location: "Hyderabad",
-    },
-    {
-      company: "Amazon",
-      role: "Cloud Engineer",
-      salary: "22 LPA",
-      rating: 5,
-      type: "Product",
-      location: "Bangalore",
-    },
-    {
-      company: "Microsoft",
-      role: "DevOps Engineer",
-      salary: "18 LPA",
-      rating: 5,
-      type: "Product",
-      location: "Hyderabad",
-    },
-
-    {
-      company: "Accenture",
-      role: "Full Stack Developer",
-      salary: "7 LPA",
-      rating: 4,
-      type: "Service",
-      location: "Chennai",
-    },
-    {
-      company: "Meta",
-      role: "Frontend Developer",
-      salary: "20 LPA",
-      rating: 5,
-      type: "Product",
-      location: "Bangalore",
-    },
-    {
-      company: "HCL",
-      role: "Backend Developer",
-      salary: "6 LPA",
-      rating: 3,
-      type: "Service",
-      location: "Noida",
-    },
-
-    {
-      company: "Deloitte",
-      role: "Cyber Security",
-      salary: "10 LPA",
-      rating: 4,
-      type: "Service",
-      location: "Hyderabad",
-    },
-    {
-      company: "Capgemini",
-      role: "Testing Engineer",
-      salary: "4.5 LPA",
-      rating: 3,
-      type: "Service",
-      location: "Hyderabad",
-    },
-
-    {
-      company: "Paytm",
-      role: "Mobile App Developer",
-      salary: "11 LPA",
-      rating: 4,
-      type: "Product",
-      location: "Delhi",
-    },
-    {
-      company: "Cisco",
-      role: "Network Engineer",
-      salary: "9 LPA",
-      rating: 4,
-      type: "Product",
-      location: "Bangalore",
-    },
-    {
-      company: "Oracle",
-      role: "Database Developer",
-      salary: "10 LPA",
-      rating: 4,
-      type: "Product",
-      location: "Bangalore",
-    },
-  ];
-
-  // search function
-
-  const searchRole = async (role) => {
-    const r = role.trim();
-
-    if (!r) return;
-
-    setSelectedRole(r);
-
-    const reactJobs = allJobs.filter((j) =>
-      j.role.toLowerCase().includes(r.toLowerCase()),
-    );
+  // Fetch jobs from MySQL
+  const fetchJobs = async (role = "") => {
+    const currentRequest = ++requestId.current;
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/users/job-roles?role=${encodeURIComponent(r)}`,
-      );
+      const url = role.trim()
+        ? `http://localhost:5000/api/users/job-roles?role=${encodeURIComponent(role)}`
+        : "http://localhost:5000/api/users/job-roles";
+
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error("Unable to fetch job roles");
       }
 
-      const dbJobs = await response.json();
+      const data = await response.json();
 
-      setJobs([...reactJobs, ...dbJobs]);
+      // Ignore outdated requests
+      if (currentRequest === requestId.current) {
+        setJobs(data);
+      }
     } catch (error) {
-      console.error("Error fetching job roles:", error);
-      setJobs(reactJobs);
+      if (currentRequest === requestId.current) {
+        console.error("Error fetching job roles:", error);
+        setJobs([]);
+      }
     }
+  };
+
+  // Search function
+  const searchRole = (role) => {
+    const r = role.trim();
+
+    if (!r) {
+      requestId.current++;
+      setSelectedRole("");
+      setJobs([]);
+      return;
+    }
+
+    setSelectedRole(r);
+    setJobs([]);
+    fetchJobs(r);
+  };
+  // Handle input and Backspace
+  const handleInputChange = (value) => {
+    setRoleInput(value);
+
+    if (value.trim() === "") {
+      requestId.current++;
+      setSelectedRole("");
+      setJobs([]);
+    }
+  };
+
+  // Search button and Enter key
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    searchRole(roleInput);
   };
 
   return (
     <div className="roles-page">
       <h1 className="roles-title">Search Job Role</h1>
 
-      {/* search box */}
-
-      <div className="search-area">
+      {/* Search box */}
+      <form className="search-area" onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Enter role"
           value={roleInput}
-          onChange={(e) => setRoleInput(e.target.value)}
+          onChange={(e) => handleInputChange(e.target.value)}
         />
 
-        <button onClick={() => searchRole(roleInput)}>Search</button>
-      </div>
+        <button type="submit">Search</button>
+      </form>
 
-      {/* role buttons */}
-
+      {/* Role buttons */}
       <div className="roles-list">
         {roles.map((r, i) => (
-          <button key={i} className="role-btn" onClick={() => searchRole(r)}>
+          <button
+            key={i}
+            className="role-btn"
+            onClick={() => {
+              setRoleInput(r);
+              searchRole(r);
+            }}>
             {r}
           </button>
         ))}
       </div>
 
-      {/* result table */}
-
-      {selectedRole && jobs.length > 0 && (
+      {/* Result table */}
+      {jobs.length > 0 && (
         <table className="result-table">
           <thead>
             <tr>
